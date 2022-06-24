@@ -1,0 +1,285 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Todo App API",
+    "description": "API specification for the todo application"
+  },
+  "servers": [
+    {
+      "url": "https://localhost:3000/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Todos",
+      "description": "Todos management"
+    }
+  ],
+  "paths": {
+    "/todos": {
+      "get": {
+        "operationId": "getTodos",
+        "tags": [
+          "Todos"
+        ],
+        "description": "Returns a list of todos",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageLimit"
+          },
+          {
+            "$ref": "#/components/parameters/PageOffset"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully returned a list of todos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Todo"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Todos"
+        ],
+        "description": "Create a new todo",
+        "operationId": "createTodo",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Todo"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created a new todo"
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Todos"
+        ],
+        "description": "Update a todo",
+        "operationId": "updateTodo",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TodoUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated a todo"
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/todos/{id}": {
+      "get": {
+        "tags": [
+          "Todos"
+        ],
+        "description": "Obtain information about a todo by id",
+        "operationId": "getTodoById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully returned a todo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Todo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Todo not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Todos"
+        ],
+        "description": "Delete a todo by id",
+        "operationId": "deleteTodoById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted a todo"
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Todo": {
+        "type": "object",
+        "required": [
+          "description"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "description": {
+            "type": "string",
+            "nullable": false
+          },
+          "isCompleted": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "status": {
+            "type": "integer",
+            "nullable": false
+          },
+          "message": {
+            "type": "string",
+            "nullable": false
+          }
+        }
+      },
+      "TodoUpdateInput": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "description": {
+            "type": "string"
+          },
+          "isCompleted": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      }
+    },
+    "parameters": {
+      "PageLimit": {
+        "name": "limit",
+        "in": "query",
+        "description": "Limits the number of items on a page",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "PageOffset": {
+        "name": "offset",
+        "in": "query",
+        "description": "Specifies the page number of the artists to be displayed",
+        "schema": {
+          "type": "integer"
+        }
+      }
+    }
+  }
+}

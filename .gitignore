@@ -5,6 +5,12 @@
 /.pnp
 .pnp.js
 
+# node version manager
+#.nvmrc
+
+# vscode
+.vscode
+
 # testing
 /coverage
 
