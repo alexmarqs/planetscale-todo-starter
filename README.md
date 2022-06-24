@@ -8,11 +8,6 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - API Routes Middlewares (this is a manual middlewware mechanism, as alternative we could use `middy` or `next-connect`)
 - Generated client API based on OpenAPI specification via `openapi-client-axios`
 
-## Possible future features
-
-- Migrate to mono-repo + extract utilities as a separate package
-- Use `next-connect` or `middy` instead of manual middleware wrapper functions
-
 ## Getting Started
 
 First, run the development server:
