@@ -13,20 +13,21 @@ export enum ServerStateTodoKeys {
   TODOS = 'todos'
 }
 
+// Hook to get all todos
 export const useGetTodos = (options?: UseQueryOptions<Todo[]>) => {
   return useQuery(
     ServerStateTodoKeys.TODOS,
     () => todosApiClient.getTodos().then((res) => res.data),
-    // The error is handled in the _app.tsx -> global error handler to avoid showing a error toast for every consumer}
-    // {
-    //   onError: (err) => {
-    //     ....
-    //   }
-    // }
-    options
+    {
+      ...options,
+      onError: (err: any) => {
+        showErrorToast(err?.message);
+      }
+    }
   );
 };
 
+// Hook to delete a todo
 export const useDeleteTodo = () => {
   const cache = useQueryClient();
   return useMutation(
@@ -61,18 +62,10 @@ export const useDeleteTodo = () => {
         await cache.invalidateQueries(ServerStateTodoKeys.TODOS);
       }
     }
-    // {
-    //   onSuccess: () => {
-    //     cache.invalidateQueries(ServerStateTodoKeys.TODOS);
-    //     showSuccessToast('Todo deleted successfully');
-    //   },
-    //   onError: (err: any) => {
-    //     showErrorToast(err?.message);
-    //   }
-    // }
   );
 };
 
+// Hook to update a todo (using optimistic updates)
 export const useUpdateTodo = () => {
   const cache = useQueryClient();
   return useMutation(
@@ -102,16 +95,13 @@ export const useUpdateTodo = () => {
         // Return a context object with the snapshotted value
         return { prevTodos };
       },
-      // onSuccess: () => {
-      //   cache.invalidateQueries(ServerStateTodoKeys.TODOS);
-      //   showSuccessToast('Todo updated successfully');
-      // }
 
       // If the mutation fails, use the context returned from onMutate to roll back
       onError: (err: any, _variables, context) => {
         cache.setQueryData(ServerStateTodoKeys.TODOS, context.prevTodos);
         showErrorToast(err?.message);
       },
+
       // Always refetch after error or success:
       onSettled: async () => {
         await cache.invalidateQueries(ServerStateTodoKeys.TODOS);
@@ -155,14 +145,5 @@ export const useCreateTodo = () => {
         cache.invalidateQueries(ServerStateTodoKeys.TODOS);
       }
     }
-    // {
-    //   onSuccess: () => {
-    //     cache.invalidateQueries(ServerStateTodoKeys.TODOS);
-    //     showSuccessToast('Todo created successfully');
-    //   },
-    //   onError: (err: any) => {
-    //     showErrorToast(err?.message);
-    //   }
-    // }
   );
 };
